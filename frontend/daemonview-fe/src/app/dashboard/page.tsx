@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useEffect } from 'react';
+//import { useEffect } from 'react';
 import styled from 'styled-components';
 import {
   FiSearch,
@@ -35,7 +35,7 @@ const sidebarIcons = [
 
 const DaemonView = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // sidebar open/close status
-  const [username, setUsername] = useState('');
+  //const [username, setUsername] = useState('');
   const router = useRouter();
   const handleLogout = async () => {
     try {
@@ -52,7 +52,7 @@ const DaemonView = () => {
   const handleProfileClick = () => {
     router.push('/dashboard/profile');
   };
-  useEffect(() => {
+  {/*useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch('http://localhost:8080/api/check-auth', {
@@ -74,7 +74,7 @@ const DaemonView = () => {
       }
     };
     fetchUser();
-  })
+  })*/}
 
   return (
     <Container>
@@ -109,7 +109,7 @@ const DaemonView = () => {
           {/* user area showing user profile icon and username */}
           <UserArea>
             <FiUser size={20} style={{ cursor: 'pointer' }} onClick={handleProfileClick} />
-            <span>{username}</span>
+            {/* <span>{username}</span> */}
             <FiLogOut size={20} style={{ cursor: 'pointer' }} onClick={handleLogout} />
           </UserArea>
         </Header>
