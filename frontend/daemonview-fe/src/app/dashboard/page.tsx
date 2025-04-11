@@ -79,19 +79,17 @@ const DaemonView = () => {
   return (
     <Container>
       {/* sidebar is conditionally rendered based on sidebarOpen state */}
-      {sidebarOpen && (
-        <Sidebar>
-          {/* iterating over sidebarIcons array to render each button in the sidebar */}
-          {sidebarIcons.map(({ icon, label }, idx) => (
-            <SidebarButton key={idx} title={label}>
-              {icon} {/* each button gets the respective icon */}
-            </SidebarButton>
-          ))}
-        </Sidebar>
-      )}
+      <Sidebar $isOpen={sidebarOpen}>
+        {sidebarIcons.map(({ icon, label }, idx) => (
+          <SidebarButton key={idx} title={label}>
+            {icon}
+          </SidebarButton>
+        ))}
+      </Sidebar>
+
 
       {/* main content area */}
-      <Content>
+      <Content $isSidebarOpen={sidebarOpen}>
         <Header>
           <LeftHeader>
             {/* button to toggle sidebar open/close */}
@@ -109,9 +107,10 @@ const DaemonView = () => {
           {/* user area showing user profile icon and username */}
           <UserArea>
             <FiUser size={20} style={{ cursor: 'pointer' }} onClick={handleProfileClick} />
-            {/* <span>{username}</span> */}
+            <span>{username}</span>
             <FiLogOut size={20} style={{ cursor: 'pointer' }} onClick={handleLogout} />
           </UserArea>
+
         </Header>
 
         {/* main action buttons */}
@@ -170,6 +169,21 @@ const DaemonView = () => {
 
 export default DaemonView;
 
+import { keyframes } from 'styled-components';
+
+const glow = keyframes`
+  0% {
+    box-shadow: 0 0 10px rgba(99, 91, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(99, 91, 255, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(99, 91, 255, 0.4);
+  }
+`;
+
+
 // styled components
 const Container = styled.div`
   display: flex;
@@ -180,7 +194,11 @@ const Container = styled.div`
   transition: background-color 0.3s ease;
 `;
 
-const Sidebar = styled.div`
+const Sidebar = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
   width: 70px;
   background-color: #2a274f;
   display: flex;
@@ -188,8 +206,11 @@ const Sidebar = styled.div`
   align-items: center;
   padding-top: 20px;
   gap: 15px;
-  box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: ${({ $isOpen }) =>
+    $isOpen ? '4px 0px 10px rgba(0, 0, 0, 0.1)' : 'none'};
+  transition: transform 0.4s ease-in-out;
+  transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+  z-index: 10;
 `;
 
 const SidebarButton = styled.button`
@@ -199,26 +220,31 @@ const SidebarButton = styled.button`
   padding: 14px;
   border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s ease;
   width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease;
 
   &:hover {
     background: #635bff;
     transform: scale(1.1);
+    animation: ${glow} 2s ease-in-out infinite;
   }
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $isSidebarOpen: boolean }>`
   flex: 1;
   padding: 20px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   min-width: 0;
+  transition: margin-left 0.4s ease-in-out;
+  margin-left: ${({ $isSidebarOpen }) => ($isSidebarOpen ? '70px' : '0')};
 `;
 
 const Header = styled.div`
@@ -237,9 +263,13 @@ const SidebarToggle = styled.button`
   color: white;
   cursor: pointer;
   margin-right: 10px;
+  transition: 0.3s ease;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background: #635bff;
+    animation: ${glow} 2s ease-in-out infinite;
   }
 `;
 
@@ -275,15 +305,17 @@ const MainButton = styled.button<{ selected?: boolean }>`
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s ease;
-  box-shadow: ${({ selected }) => (selected ? '0 0 10px #635bffaa' : 'none')};
   background-color: ${({ selected }) => (selected ? '#635bff' : '#2a274f')};
   color: #fff;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background-color: #4e49c4;
-    transform: translateY(-2px);
+    animation: ${glow} 2s ease-in-out infinite;
   }
 `;
+
 
 const TableSection = styled.div`
   flex: 1;
@@ -327,9 +359,13 @@ const TableActions = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  transition: 0.3s ease;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background: #635bff;
+    animation: ${glow} 2s ease-in-out infinite;
   }
 `;
 
@@ -366,4 +402,39 @@ const LeftHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const redGlow = keyframes`
+  0% {
+    box-shadow: 0 0 10px rgba(255, 91, 91, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 91, 91, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 91, 91, 0.4);
+  }
+`;
+
+
+const ProfileIcon = styled(FiUser)`
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 20px;
+
+  &:hover {
+    color: #635bff;
+    animation: ${glow} 2s ease-in-out infinite;
+  }
+`;
+
+const LogoutIcon = styled(FiLogOut)`
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 20px;
+
+  &:hover {
+    color: #ff5b5b;
+    animation: ${redGlow} 2s ease-in-out infinite;
+  }
 `;

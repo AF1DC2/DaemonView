@@ -25,7 +25,6 @@ router.post('/register', async (req, res) => {
   const { username, password, email } = req.body;
 
   try {
-    // Check if user already exists
     const [existingUsers] = await db.query(
       'SELECT * FROM users WHERE username = ?',
       [username]
@@ -68,7 +67,6 @@ router.post('/login', async (req, res) => {
 
     const user = rows[0];
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!isMatch) {
