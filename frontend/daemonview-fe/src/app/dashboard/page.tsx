@@ -106,9 +106,9 @@ const DaemonView = () => {
 
           {/* user area showing user profile icon and username */}
           <UserArea>
-            <FiUser size={20} style={{ cursor: 'pointer' }} onClick={handleProfileClick} />
-            <span>{username}</span>
-            <FiLogOut size={20} style={{ cursor: 'pointer' }} onClick={handleLogout} />
+            <ProfileIcon onClick={handleProfileClick} />
+            {/* <span>{username}</span> */}
+            <LogoutIcon onClick={handleLogout} />
           </UserArea>
 
         </Header>
